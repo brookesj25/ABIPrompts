@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Builder for Teachers - G.R.A.D.E. Framework</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .grade-explanation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            margin: 20px;
+            border-radius: 5px;
+        }
+
+        .grade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .grade-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .grade-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .preview-section {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        .grade-letter {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        select, textarea, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, textarea:focus, input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .template-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .template-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .template-btn:hover {
+            background: #c0392b;
+        }
+
+        .preview-content {
+            background: #34495e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            min-height: 200px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+        }
+
+        .copy-section {
+            text-align: center;
+        }
+
+        .copy-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .copy-btn:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        .copy-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+        }
+
+        .tips {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .tips h4 {
+            color: #8b4513;
+            margin-bottom: 10px;
+        }
+
+        .tips ul {
+            color: #8b4513;
+            padding-left: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .grade-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Prompt Builder for Teachers</h1>
+            <p>Create effective AI prompts using the G.R.A.D.E. framework</p>
+        </div>
+
+        <div class="grade-explanation">
+            <h3>The G.R.A.D.E. Framework</h3>
+            <div class="grade-grid">
+                <div class="grade-item">
+                    <strong>G - Goal</strong>
+                    What you want to achieve
+                </div>
+                <div class="grade-item">
+                    <strong>R - Role</strong>
+                    AI's perspective/expertise
+                </div>
+                <div class="grade-item">
+                    <strong>A - Audience</strong>
+                    Who the output is for
+                </div>
+                <div class="grade-item">
+                    <strong>D - Details</strong>
+                    Specific requirements
+                </div>
+                <div class="grade-item">
+                    <strong>E - Examples</strong>
+                    Format or examples
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2>Build Your Prompt</h2>
+                
+                <div class="template-buttons">
+                    <button class="template-btn" onclick="loadTemplate('lesson')">Lesson Planning</button>
+                    <button class="template-btn" onclick="loadTemplate('feedback')">Feedback</button>
+                    <button class="template-btn" onclick="loadTemplate('differentiation')">Differentiation</button>
+                    <button class="template-btn" onclick="loadTemplate('assessment')">Assessment</button>
+                    <button class="template-btn" onclick="loadTemplate('communication')">Communication</button>
+                    <button class="template-btn" onclick="clearForm()">Clear All</button>
+                </div>
+
+                <form id="promptForm">
+                    <div class="form-group">
+                        <label for="goal">
+                            <span class="grade-letter">G</span>Goal - What do you want to achieve?
+                        </label>
+                        <select id="goalType" onchange="updateGoalText()">
+                            <option value="">Select a goal type...</option>
+                            <option value="lesson">Create a lesson plan</option>
+                            <option value="feedback">Generate feedback</option>
+                            <option value="worksheet">Create a worksheet</option>
+                            <option value="assessment">Design an assessment</option>
+                            <option value="communication">Write communication</option>
+                            <option value="differentiation">Adapt for different needs</option>
+                            <option value="custom">Custom goal</option>
+                        </select>
+                        <textarea id="goal" placeholder="Describe your specific goal..." oninput="updatePreview()"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">
+                            <span class="grade-letter">R</span>Role - What should the AI act as?
+                        </label>
+                        <select id="role" onchange="updatePreview()">
+                            <option value="">Select a role...</option>
+                            <option value="experienced secondary school teacher">Experienced secondary school teacher</option>
+                            <option value="head of department">Head of Department</option>
+                            <option value="SENCO specialist">SENCO specialist</option>
+                            <option value="primary school teacher">Primary school teacher</option>
+                            <option value="exam board assessor">Exam board assessor</option>
+                            <option value="curriculum specialist">Curriculum specialist</option>
+                            <option value="educational consultant">Educational consultant</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="audience">
+                            <span class="grade-letter">A</span>Audience - Who is this for?
+                        </label>
+                        <select id="audienceType" onchange="updateAudienceText()">
+                            <option value="">Select audience type...</option>
+                            <option value="year7">Year 7 students</option>
+                            <option value="year8">Year 8 students</option>
+                            <option value="year9">Year 9 students</option>
+                            <option value="year10">Year 10 students</option>
+                            <option value="year11">Year 11 students</option>
+                            <option value="year12">Year 12 students</option>
+                            <option value="year13">Year 13 students</option>
+                            <option value="parents">Parents/carers</option>
+                            <option value="staff">Teaching staff</option>
+                            <option value="custom">Custom audience</option>
+                        </select>
+                        <textarea id="audience" placeholder="Describe your audience (ability levels, special needs, etc.)..." oninput="updatePreview()"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="details">
+                            <span class="grade-letter">D</span>Details - Specific requirements and constraints
+                        </label>
+                        <textarea id="details" placeholder="Include: lesson duration, curriculum specifications, available resources, assessment focus, school context..." oninput="updatePreview()"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="examples">
+                            <span class="grade-letter">E</span>Examples - Desired format or examples
+                        </label>
+                        <textarea id="examples" placeholder="Specify format (e.g., 'Format as a table with timings', 'Include success criteria', 'Similar to this structure...')..." oninput="updatePreview()"></textarea>
+                    </div>
+                </form>
+
+                <div class="tips">
+                    <h4>💡 Quick Tips:</h4>
+                    <ul>
+                        <li>Use the template buttons for quick starts</li>
+                        <li>Be specific in your goal - avoid vague requests</li>
+                        <li>Include your subject area in the details</li>
+                        <li>Mention any special requirements (EAL, SEN, etc.)</li>
+                        <li>Always review and adapt AI outputs to your context</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h2>Your Generated Prompt</h2>
+                <div id="promptPreview" class="preview-content">
+                    Fill in the form to see your prompt appear here...
+                </div>
+                
+                <div class="copy-section">
+                    <button id="copyBtn" class="copy-btn" onclick="copyPrompt()" disabled>
+                        📋 Copy Prompt to Clipboard
+                    </button>
+                    <div id="successMessage" class="success-message">
+                        ✅ Copied! Now paste into your AI tool
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #4a5f7a;">
+                        <h4 style="margin-bottom: 10px;">AI Tools You Can Use:</h4>
+                        <div style="font-size: 14px; line-height: 1.8;">
+                            • ChatGPT (chat.openai.com)<br>
+                            • Google Gemini (gemini.google.com)<br>
+                            • Microsoft Copilot (copilot.microsoft.com)<br>
+                            • Claude AI (claude.ai)<br>
+                            • TeachMateAI or MagicSchool
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const templates = {
+            lesson: {
+                goal: "Create a detailed 50-minute lesson plan",
+                role: "experienced secondary school teacher",
+                audience: "Year 9 students (mixed ability class with 4 EAL students)",
+                details: "Science lesson on photosynthesis, using AQA GCSE specification, available resources include interactive whiteboard and tablets, focus on practical investigation and addressing common misconceptions",
+                examples: "Format as: Learning objectives, starter activity (10 mins), main activity with differentiation (30 mins), plenary (10 mins), homework task, success criteria"
+            },
+            feedback: {
+                goal: "Provide detailed, constructive feedback on student work",
+                role: "experienced secondary school teacher",
+                audience: "Year 11 student preparing for GCSE exams",
+                details: "English Literature essay on 'Macbeth' ambition theme, AQA specification, student currently working at Grade 5 level but aiming for Grade 7, focus on analysis and quotation use",
+                examples: "Structure feedback as: What Went Well (2 points), Even Better If (2 specific targets), Next Steps (1 actionable goal)"
+            },
+            differentiation: {
+                goal: "Adapt this learning activity for different student needs",
+                role: "SENCO specialist",
+                audience: "Mixed ability Year 8 class including students with dyslexia, autism, and EAL learners",
+                details: "Original activity is essay writing about climate change, need versions for different reading levels and learning preferences, maintain same learning objectives",
+                examples: "Provide 3 versions: visual/graphic organizer approach, simplified text with sentence starters, advanced extension with additional research"
+            },
+            assessment: {
+                goal: "Create a formative assessment task",
+                role: "head of department",
+                audience: "Year 10 students studying GCSE History",
+                details: "Topic is causes of World War 1, Edexcel specification, assessment should check understanding of causation and significance, 20-minute task suitable for end of lesson",
+                examples: "Include: clear success criteria, mark scheme with levels, peer assessment guidelines, teacher feedback prompts"
+            },
+            communication: {
+                goal: "Draft a professional communication to parents",
+                role: "form tutor",
+                audience: "Parents of Year 7 students",
+                details: "Regarding upcoming residential trip, need to explain costs, activities, permission requirements, and benefits for student development, school uses positive, partnership-focused communication style",
+                examples: "Include: clear subject line, friendly but professional tone, bullet points for key information, contact details for questions, deadline for responses"
+            }
+        };
+
+        function loadTemplate(type) {
+            const template = templates[type];
+            if (template) {
+                document.getElementById('goal').value = template.goal;
+                document.getElementById('role').value = template.role;
+                document.getElementById('audience').value = template.audience;
+                document.getElementById('details').value = template.details;
+                document.getElementById('examples').value = template.examples;
+                updatePreview();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('promptForm').reset();
+            document.getElementById('goalType').value = '';
+            document.getElementById('audienceType').value = '';
+            updatePreview();
+        }
+
+        function updateGoalText() {
+            const goalType = document.getElementById('goalType').value;
+            const goalInput = document.getElementById('goal');
+            
+            if (goalType && goalType !== 'custom') {
+                const goalTexts = {
+                    lesson: "Create a detailed lesson plan",
+                    feedback: "Provide constructive feedback",
+                    worksheet: "Create a differentiated worksheet",
+                    assessment: "Design an assessment task",
+                    communication: "Write a professional communication",
+                    differentiation: "Adapt content for different learning needs"
+                };
+                goalInput.value = goalTexts[goalType] || '';
+                updatePreview();
+            }
+        }
+
+        function updateAudienceText() {
+            const audienceType = document.getElementById('audienceType').value;
+            const audienceInput = document.getElementById('audience');
+            
+            if (audienceType && audienceType !== 'custom') {
+                const audienceTexts = {
+                    year7: "Year 7 students (ages 11-12, mixed ability)",
+                    year8: "Year 8 students (ages 12-13, mixed ability)",
+                    year9: "Year 9 students (ages 13-14, mixed ability)",
+                    year10: "Year 10 students (ages 14-15, GCSE level)",
+                    year11: "Year 11 students (ages 15-16, GCSE exam preparation)",
+                    year12: "Year 12 students (ages 16-17, A-Level)",
+                    year13: "Year 13 students (ages 17-18, A-Level exam preparation)",
+                    parents: "Parents and carers",
+                    staff: "Teaching staff and colleagues"
+                };
+                audienceInput.value = audienceTexts[audienceType] || '';
+                updatePreview();
+            }
+        }
+
+        function updatePreview() {
+            const goal = document.getElementById('goal').value.trim();
+            const role = document.getElementById('role').value.trim();
+            const audience = document.getElementById('audience').value.trim();
+            const details = document.getElementById('details').value.trim();
+            const examples = document.getElementById('examples').value.trim();
+
+            let prompt = '';
+            
+            if (goal) {
+                prompt += `**Goal:** ${goal}\n\n`;
+            }
+            
+            if (role) {
+                prompt += `**Role:** Act as ${role}\n\n`;
+            }
+            
+            if (audience) {
+                prompt += `**Audience:** ${audience}\n\n`;
+            }
+            
+            if (details) {
+                prompt += `**Details:** ${details}\n\n`;
+            }
+            
+            if (examples) {
+                prompt += `**Examples:** ${examples}`;
+            }
+
+            const previewElement = document.getElementById('promptPreview');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            if (prompt.trim()) {
+                previewElement.textContent = prompt;
+                copyBtn.disabled = false;
+            } else {
+                previewElement.textContent = 'Fill in the form to see your prompt appear here...';
+                copyBtn.disabled = true;
+            }
+        }
+
+        async function copyPrompt() {
+            const promptText = document.getElementById('promptPreview').textContent;
+            
+            try {
+                await navigator.clipboard.writeText(promptText);
+                const successMessage = document.getElementById('successMessage');
+                successMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+                
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = promptText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const successMessage = document.getElementById('successMessage');
+                successMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Initialize
+        updatePreview();
+    </script>
+</body>
+</html>
