@@ -216,6 +216,21 @@
             opacity: 1;
         }
 
+        .help-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-left: 3px solid #3498db;
+            border-radius: 4px;
+        }
+
+        .custom-role-input {
+            margin-top: 10px;
+            display: none;
+        }
+
         .tips {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -293,6 +308,8 @@
                     <button class="template-btn" onclick="loadTemplate('differentiation')">Differentiation</button>
                     <button class="template-btn" onclick="loadTemplate('assessment')">Assessment</button>
                     <button class="template-btn" onclick="loadTemplate('communication')">Communication</button>
+                    <button class="template-btn" onclick="loadTemplate('driving_question')">Driving Question</button>
+                    <button class="template-btn" onclick="loadTemplate('kuba')">KUBA Objectives</button>
                     <button class="template-btn" onclick="clearForm()">Clear All</button>
                 </div>
 
@@ -301,6 +318,9 @@
                         <label for="goal">
                             <span class="grade-letter">G</span>Goal - What do you want to achieve?
                         </label>
+                        <div class="help-text">
+                            <strong>Be specific about your outcome:</strong> Instead of "help with teaching," say "create a 50-minute lesson plan" or "generate differentiated worksheets." Include the format you want (lesson, resource, assessment, etc.) and any specific requirements.
+                        </div>
                         <select id="goalType" onchange="updateGoalText()">
                             <option value="">Select a goal type...</option>
                             <option value="lesson">Create a lesson plan</option>
@@ -309,16 +329,21 @@
                             <option value="assessment">Design an assessment</option>
                             <option value="communication">Write communication</option>
                             <option value="differentiation">Adapt for different needs</option>
+                            <option value="driving_question">Create a driving question</option>
+                            <option value="kuba">Develop KUBA objectives</option>
                             <option value="custom">Custom goal</option>
                         </select>
-                        <textarea id="goal" placeholder="Describe your specific goal..." oninput="updatePreview()"></textarea>
+                        <textarea id="goal" placeholder="Describe your specific goal in detail..." oninput="updatePreview()"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="role">
-                            <span class="grade-letter">R</span>Role - What should the AI act as?
+                            <span class="grade-letter">R</span>Role - What expertise should the AI demonstrate?
                         </label>
-                        <select id="role" onchange="updatePreview()">
+                        <div class="help-text">
+                            <strong>Give AI a professional persona:</strong> This helps AI respond with appropriate expertise and language. Choose a role that matches your needs - subject specialist, leadership position, or create your own expert role.
+                        </div>
+                        <select id="role" onchange="handleRoleChange()">
                             <option value="">Select a role...</option>
                             <option value="experienced secondary school teacher">Experienced secondary school teacher</option>
                             <option value="head of department">Head of Department</option>
@@ -327,13 +352,20 @@
                             <option value="exam board assessor">Exam board assessor</option>
                             <option value="curriculum specialist">Curriculum specialist</option>
                             <option value="educational consultant">Educational consultant</option>
+                            <option value="custom">Create your own role...</option>
                         </select>
+                        <div id="customRole" class="custom-role-input">
+                            <input type="text" id="customRoleText" placeholder="e.g., 'A-Level Physics teacher with 10 years experience in practical investigations'" oninput="updatePreview()">
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="audience">
-                            <span class="grade-letter">A</span>Audience - Who is this for?
+                            <span class="grade-letter">A</span>Audience - Who is this content for?
                         </label>
+                        <div class="help-text">
+                            <strong>Describe your specific learners:</strong> Include year group, ability levels, special needs, language requirements, and any relevant context. The more specific you are, the better AI can tailor the content.
+                        </div>
                         <select id="audienceType" onchange="updateAudienceText()">
                             <option value="">Select audience type...</option>
                             <option value="year7">Year 7 students</option>
@@ -347,21 +379,27 @@
                             <option value="staff">Teaching staff</option>
                             <option value="custom">Custom audience</option>
                         </select>
-                        <textarea id="audience" placeholder="Describe your audience (ability levels, special needs, etc.)..." oninput="updatePreview()"></textarea>
+                        <textarea id="audience" placeholder="e.g., 'Year 9 mixed ability class of 28 students, including 4 EAL learners, 2 students with dyslexia, and several high achievers targeting Grade 8-9'" oninput="updatePreview()"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="details">
-                            <span class="grade-letter">D</span>Details - Specific requirements and constraints
+                            <span class="grade-letter">D</span>Details - Essential context and constraints
                         </label>
-                        <textarea id="details" placeholder="Include: lesson duration, curriculum specifications, available resources, assessment focus, school context..." oninput="updatePreview()"></textarea>
+                        <div class="help-text">
+                            <strong>Provide crucial context:</strong> Include curriculum specifications, available resources, time limits, prior learning, school context, and any constraints. Mention common misconceptions to address or specific challenges you're facing.
+                        </div>
+                        <textarea id="details" placeholder="e.g., 'AQA GCSE Science specification, 50-minute lesson, follows previous learning on atomic structure, available resources: interactive whiteboard and tablets, need to address misconception that electrons orbit like planets, school emphasizes practical investigation approach'" oninput="updatePreview()"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="examples">
-                            <span class="grade-letter">E</span>Examples - Desired format or examples
+                            <span class="grade-letter">E</span>Extras - Format, structure, and examples
                         </label>
-                        <textarea id="examples" placeholder="Specify format (e.g., 'Format as a table with timings', 'Include success criteria', 'Similar to this structure...')..." oninput="updatePreview()"></textarea>
+                        <div class="help-text">
+                            <strong>Specify exactly what you want:</strong> Include desired format (table, bullet points, structured sections), required elements (timings, differentiation, success criteria), and any examples of good practice you want AI to follow.
+                        </div>
+                        <textarea id="examples" placeholder="e.g., 'Format as: Learning objectives (5 mins), Starter activity (10 mins), Main teaching with differentiation (30 mins), Plenary assessment (5 mins). Include success criteria in student-friendly language and extension tasks for early finishers'" oninput="updatePreview()"></textarea>
                     </div>
                 </form>
 
@@ -442,6 +480,20 @@
                 audience: "Parents of Year 7 students",
                 details: "Regarding upcoming residential trip, need to explain costs, activities, permission requirements, and benefits for student development, school uses positive, partnership-focused communication style",
                 examples: "Include: clear subject line, friendly but professional tone, bullet points for key information, contact details for questions, deadline for responses"
+            },
+            driving_question: {
+                goal: "Create a compelling driving question for an inquiry-based learning unit",
+                role: "curriculum specialist with expertise in inquiry-based learning",
+                audience: "Year 8 Geography students studying climate change",
+                details: "Unit focuses on human impact on climate, local to global connections, student action possibilities. Need question that promotes critical thinking, connects to students' lives, and sustains interest over 6-week unit",
+                examples: "Format as: Main driving question, 3-4 supporting sub-questions, explanation of how question promotes inquiry, suggested final outcomes/products students could create"
+            },
+            kuba: {
+                goal: "Develop comprehensive KUBA learning objectives (Knowledge, Understanding, Being able to, Applying)",
+                role: "experienced teacher with expertise in learning objective design",
+                audience: "Year 10 GCSE Business Studies students",
+                details: "Topic is marketing mix (4 Ps), AQA specification, 3-lesson sequence, students have prior knowledge of basic business concepts, need to prepare for exam questions on marketing strategies",
+                examples: "Format as: Knowledge (what students will know), Understanding (what students will comprehend), Being able to (skills students will develop), Applying (how students will use learning). Include success criteria for each KUBA element"
             }
         };
 
@@ -464,6 +516,29 @@
             updatePreview();
         }
 
+        function handleRoleChange() {
+            const roleSelect = document.getElementById('role');
+            const customRoleDiv = document.getElementById('customRole');
+            
+            if (roleSelect.value === 'custom') {
+                customRoleDiv.style.display = 'block';
+            } else {
+                customRoleDiv.style.display = 'none';
+                updatePreview();
+            }
+        }
+
+        function getCurrentRole() {
+            const roleSelect = document.getElementById('role');
+            const customRoleInput = document.getElementById('customRoleText');
+            
+            if (roleSelect.value === 'custom') {
+                return customRoleInput.value.trim();
+            } else {
+                return roleSelect.value.trim();
+            }
+        }
+
         function updateGoalText() {
             const goalType = document.getElementById('goalType').value;
             const goalInput = document.getElementById('goal');
@@ -475,7 +550,9 @@
                     worksheet: "Create a differentiated worksheet",
                     assessment: "Design an assessment task",
                     communication: "Write a professional communication",
-                    differentiation: "Adapt content for different learning needs"
+                    differentiation: "Adapt content for different learning needs",
+                    driving_question: "Create a compelling driving question for inquiry-based learning",
+                    kuba: "Develop comprehensive KUBA learning objectives (Knowledge, Understanding, Being able to, Applying)"
                 };
                 goalInput.value = goalTexts[goalType] || '';
                 updatePreview();
@@ -505,7 +582,7 @@
 
         function updatePreview() {
             const goal = document.getElementById('goal').value.trim();
-            const role = document.getElementById('role').value.trim();
+            const role = getCurrentRole();
             const audience = document.getElementById('audience').value.trim();
             const details = document.getElementById('details').value.trim();
             const examples = document.getElementById('examples').value.trim();
